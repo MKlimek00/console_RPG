@@ -1,2 +1,2 @@
 # console_RPG
-repo na porjekt prostej gry RPG w konsoli
+repo na projekt prostej gry RPG w konsoli
