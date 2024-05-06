@@ -34,3 +34,5 @@ class Enemy(Character):
     def __init__(self, name: str, health: int, weapon) -> None:
         super().__init__(name, health)
         self.weapon = weapon
+
+dragon = Enemy("Dragon", 30, fists)
