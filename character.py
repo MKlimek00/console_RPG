@@ -1,11 +1,12 @@
-from weapon import fists, short_bow
+from weapon import fists, short_bow, Weapon
+from statistic import Statistic
 
 class Character:
     def __init__(self, name: str, health: int) -> None:
         self.name = name
         self._health = health
         self.health_max = health
-        self.weapon = fists
+        self.weapon : Weapon = fists
 
     @property
     def health(self) -> int:
@@ -16,16 +17,22 @@ class Character:
         if value < 0:
             raise ValueError("Health cannot be negative")
         self._health = value
+
+    @property
+    def damage(self) -> int:
+        return self.weapon.damage
     
     def attack(self, target) -> None:
-        if self._health is 0:
+        if self._health == 0:
             return # raise DeadCharacterException
         try :
-            target._health -= self.weapon.damage
-        except ValueError:
-            target._health = 0
-        finally:
+            target.health -= self.damage
             print(f"{self.name} has attacked {target.name}. {target.name} has {target._health}/{target.health_max} HP left")
+        except Exception as e:
+            target.health = 0
+            print(f"{target.name} has been defeated")
+
+            
     
     def reset(self) -> None:
         self._health = self.health_max
@@ -33,10 +40,13 @@ class Character:
 class Hero(Character):
     def __init__(self, name: str, health: int) -> None:
         super().__init__(name, health)
-        self.stats : dict[str:int] = {"STRENGTH":1, "INTELLIGENCE":1, "CHARISMA":1}
-        self.default_modifiers : dict[str:int] = {"STRENGTH":1, "INTELLIGENCE":1, "CHARISMA":1}
-        self.modifiers: dict[str:int] = {"STRENGTH":1, "INTELLIGENCE":1, "CHARISMA":1}
+        self.stats : dict[Statistic:int] = {Statistic.STRENGTH:1, Statistic.INTELLIGENCE:1, Statistic.CHARISMA:1}
+        self.modifiers: dict[Statistic:int] = {Statistic.STRENGTH:1, Statistic.INTELLIGENCE:1, Statistic.CHARISMA:1}
         self.default_weapon = self.weapon
+
+    @property
+    def damage(self) -> int:
+        return (self.weapon.damage + self.stats[Statistic.STRENGTH])*self.modifiers[Statistic.STRENGTH]
 
     def equip(self, weapon) -> None:
         print(f"{self.name} equipped the {weapon.name}")

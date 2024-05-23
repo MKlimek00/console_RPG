@@ -7,21 +7,22 @@ class Event:
         self.location = location
         self.weather = weather
         self.actions : dict = {}
-        self.event_ended: bool = False
 
     def event_loop(self, hero: Hero) -> None:
-        while not self.event_ended:
+        end_event = False
+        while not end_event:
             self.display_actions()
             choice = self.choose_action(hero)
             act = self.actions[choice]
-            act(hero)
+            end_event = act(hero)
+        self.reset()
             
 
     def display_actions(self) -> None:
         for number, act in self.actions.items():
             print(f"{number}. {act.__name__}")
 
-    # To można przenieśćdo utils
+    # To można przenieść do utils
     def choose_action(self, hero: Hero)-> None:
         choice = get_numeric("Your choice: ")
         while choice not in self.actions.keys():
@@ -33,6 +34,7 @@ class Event:
         
 
     def reset(self):
+        self.event_ended = False
         pass
 
 
@@ -53,10 +55,15 @@ class Combat_Event(Event):
         self.enemy.reset()
         self.turn_counter = 0
 
-    def fight(self, hero: Hero) -> None:
+    def fight(self, hero: Hero) -> bool:
         attack_queue : list[Character] = [hero, self.enemy]
         attack_queue[0].attack(attack_queue[1])
         attack_queue[1].attack(attack_queue[0])
+
+        if hero.health < 1 or self.enemy.health < 1:
+            return True
+        
+        return False
         # while hero.health > 0 and self.enemy.health > 0:
         #     attack_queue[turn_counter%2].attack(attack_queue[(turn_counter+1)%2])
         #     print(f"{attack_queue[turn_counter%2].name} attacked {attack_queue[(turn_counter+1)%2].name}")
@@ -68,14 +75,18 @@ class Combat_Event(Event):
         # jak będą statystyki to dodać funkcjonalność
         return True
 
-    def talk(self, hero: Hero) -> None:
+    def talk(self, hero: Hero) -> bool:
         if self.skill_check(hero, "CHARISMA", 1):
             print("talk")
+            return True
         else:
             print("you fucked up")
+            return False
+        
 
-    def run(self, hero: Hero) -> None:
+    def run(self, hero: Hero) -> bool:
         print("run")
+        return True
 
 class Inventory_Event(Event):
     def __init__(self, location: str, weather: str, item) -> None:
@@ -85,9 +96,11 @@ class Inventory_Event(Event):
 
     def take(self, hero: Hero):
         print("take")
+        return True
 
     def skip(self, hero: Hero):
         print("skip")
+        return True
 
 dragon_event = Combat_Event("Swamp", "Sunny", dragon, {"CHARISMA":3})
 sword_event = Inventory_Event("Meadow", "Foggy", iron_sword)

@@ -6,6 +6,7 @@ repo na projekt prostej gry RPG w konsoli
 - [X] dodać klasę eventu
 - [X] dodać klasę broni i możliwość ataku
 - [ ] dodać opcję oglądania ekwipunku
+- [ ] dodać opcje podglądu statystyk gracza
 - [X] dodać losowanie eventów
 - [ ] losowanie eventów nie z gotowej listy, tylko losowanie każdego elementu eventu
 - [ ] dodać wybór dla gracza jednego z trzech eventów, który chce rozegrać
