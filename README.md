@@ -10,7 +10,7 @@ repo na projekt prostej gry RPG w konsoli
 - [ ] losowanie eventów nie z gotowej listy, tylko losowanie każdego elementu eventu
 - [ ] dodać wybór dla gracza jednego z trzech eventów, który chce rozegrać
 - [ ] dodać event sklepu i monety
-- [ ] dodać klasę statystyki gracza
+- [X] dodać statystyki gracza
 - [ ] dodać metodę skill check
 - [ ] dodać nagrodę za przejście combat eventu
 - [ ] dodać inventory gracza

@@ -7,6 +7,15 @@ class Event:
         self.location = location
         self.weather = weather
         self.actions : dict = {}
+        self.event_ended: bool = False
+
+    def event_loop(self, hero: Hero) -> None:
+        while not self.event_ended:
+            self.display_actions()
+            choice = self.choose_action(hero)
+            act = self.actions[choice]
+            act(hero)
+            
 
     def display_actions(self) -> None:
         for number, act in self.actions.items():
@@ -19,8 +28,9 @@ class Event:
             print("Wrong input, choose proper number")
             choice = get_numeric("Your choice: ")
         
-        act = self.actions[choice]
-        act(hero)
+        return choice
+        
+        
 
     def reset(self):
         pass
@@ -32,6 +42,7 @@ class Combat_Event(Event):
         self.enemy: Enemy = enemy
         self.actions: dict = {1:self.fight, 2:self.talk, 3:self.run}
         self.skill_requirements: dict = skill_requirements
+        self.turn_counter : int = 0
 
     def attack_queue(self, hero: Hero) -> list[Character]:
         #TODO
@@ -40,15 +51,17 @@ class Combat_Event(Event):
     
     def reset(self) -> None:
         self.enemy.reset()
+        self.turn_counter = 0
 
     def fight(self, hero: Hero) -> None:
         attack_queue : list[Character] = [hero, self.enemy]
-        turn_counter = 0
-        while hero.health > 0 and self.enemy.health > 0:
-            attack_queue[turn_counter%2].attack(attack_queue[(turn_counter+1)%2])
-            print(f"{attack_queue[turn_counter%2].name} attacked {attack_queue[(turn_counter+1)%2].name}")
-            print(f"{attack_queue[(turn_counter+1)%2].name} has {attack_queue[(turn_counter+1)%2].health}/{attack_queue[(turn_counter+1)%2].health_max} HP")
-            turn_counter +=1
+        attack_queue[0].attack(attack_queue[1])
+        attack_queue[1].attack(attack_queue[0])
+        # while hero.health > 0 and self.enemy.health > 0:
+        #     attack_queue[turn_counter%2].attack(attack_queue[(turn_counter+1)%2])
+        #     print(f"{attack_queue[turn_counter%2].name} attacked {attack_queue[(turn_counter+1)%2].name}")
+        #     print(f"{attack_queue[(turn_counter+1)%2].name} has {attack_queue[(turn_counter+1)%2].health}/{attack_queue[(turn_counter+1)%2].health_max} HP")
+        #     turn_counter +=1
 
     def skill_check(self, hero: Hero, skill_name: str, min_skill_value: int) -> bool:
         #TODO

@@ -20,9 +20,7 @@ while not game_over:
         print("See you next time")
     if choice == 1:
         event = copy.copy(random.choice(events))
-        print(f"you are at {event.location} and it's {event.weather}")
-        event.display_actions()
-        event.choose_action(hero)
+        event.event_loop()
     utils.wait_before_proceeding()
     utils.clear_console()
 
