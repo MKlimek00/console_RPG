@@ -12,6 +12,7 @@ class Event:
         for number, act in self.actions.items():
             print(f"{number}. {act.__name__}")
 
+    # To można przenieśćdo utils
     def choose_action(self, hero: Hero)-> None:
         choice = get_numeric("Your choice: ")
         while choice not in self.actions.keys():
@@ -20,6 +21,9 @@ class Event:
         
         act = self.actions[choice]
         act(hero)
+
+    def reset(self):
+        pass
 
 
 class Combat_Event(Event):
@@ -33,14 +37,18 @@ class Combat_Event(Event):
         #TODO
         # jak będą statystyki to dodać sortowanie listy
         return [hero, self.enemy]
+    
+    def reset(self) -> None:
+        self.enemy.reset()
 
-    def fight(self, hero: Hero):
-        attack_queue = self.attack_queue(hero)
+    def fight(self, hero: Hero) -> None:
+        attack_queue : list[Character] = [hero, self.enemy]
+        turn_counter = 0
         while hero.health > 0 and self.enemy.health > 0:
-            attack_queue[0].attack(attack_queue[1])
-            attack_queue[1].attack(attack_queue[0])
-            print(f"{attack_queue[0].name} health: {attack_queue[0].health}/{attack_queue[0].health_max}")
-            print(f"{attack_queue[1].name} health: {attack_queue[1].health}/{attack_queue[1].health_max}")
+            attack_queue[turn_counter%2].attack(attack_queue[(turn_counter+1)%2])
+            print(f"{attack_queue[turn_counter%2].name} attacked {attack_queue[(turn_counter+1)%2].name}")
+            print(f"{attack_queue[(turn_counter+1)%2].name} has {attack_queue[(turn_counter+1)%2].health}/{attack_queue[(turn_counter+1)%2].health_max} HP")
+            turn_counter +=1
 
     def skill_check(self, hero: Hero, skill_name: str, min_skill_value: int) -> bool:
         #TODO

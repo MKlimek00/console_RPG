@@ -8,9 +8,14 @@ class Character:
         self.weapon = fists
     
     def attack(self, target) -> None:
+        if self.health is 0:
+            return
         target.health -= self.weapon.damage
         target.health = max(target.health, 0)
         print(f"{self.name} dealt {self.weapon.damage} damage to {target.name} with {self.weapon.name}")
+    
+    def reset(self) -> None:
+        self.health = self.health_max
 
 class Hero(Character):
     def __init__(self, name: str, health: int) -> None:
@@ -36,3 +41,4 @@ class Enemy(Character):
         self.weapon = weapon
 
 dragon = Enemy("Dragon", 30, fists)
+
