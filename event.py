@@ -8,7 +8,7 @@ class Event:
         self.weather = weather
         self.actions : dict = {}
 
-    def event_loop(self, hero: Hero) -> None:
+    def event_loop(self, hero: Hero) -> bool:
         end_event = False
         while not end_event:
             self.display_actions()
@@ -16,6 +16,8 @@ class Event:
             act = self.actions[choice]
             end_event = act(hero)
         self.reset()
+
+        return True if hero.health == 0 else False
             
 
     def display_actions(self) -> None:
@@ -31,7 +33,11 @@ class Event:
         
         return choice
         
-        
+    def skill_check(self, hero: Hero, skill_name: str, min_skill_value: int) -> bool:
+        #TODO
+        # jak będą statystyki to dodać funkcjonalność
+        #arg list używać kwargs**
+        return True
 
     def reset(self):
         self.event_ended = False
@@ -60,20 +66,7 @@ class Combat_Event(Event):
         attack_queue[0].attack(attack_queue[1])
         attack_queue[1].attack(attack_queue[0])
 
-        if hero.health < 1 or self.enemy.health < 1:
-            return True
-        
-        return False
-        # while hero.health > 0 and self.enemy.health > 0:
-        #     attack_queue[turn_counter%2].attack(attack_queue[(turn_counter+1)%2])
-        #     print(f"{attack_queue[turn_counter%2].name} attacked {attack_queue[(turn_counter+1)%2].name}")
-        #     print(f"{attack_queue[(turn_counter+1)%2].name} has {attack_queue[(turn_counter+1)%2].health}/{attack_queue[(turn_counter+1)%2].health_max} HP")
-        #     turn_counter +=1
-
-    def skill_check(self, hero: Hero, skill_name: str, min_skill_value: int) -> bool:
-        #TODO
-        # jak będą statystyki to dodać funkcjonalność
-        return True
+        return True if hero.health == 0 or self.enemy.health == 0 else False
 
     def talk(self, hero: Hero) -> bool:
         if self.skill_check(hero, "CHARISMA", 1):
@@ -81,12 +74,18 @@ class Combat_Event(Event):
             return True
         else:
             print("you fucked up")
-            return False
+            self.enemy.attack(hero)
+            return True if hero.health == 0 else False
         
 
     def run(self, hero: Hero) -> bool:
-        print("run")
-        return True
+        if self.skill_check(hero, "CHARISMA", 1):
+            print("run")
+            return True
+        else:
+            print("you fucked up")
+            self.enemy.attack(hero)
+            return True if hero.health == 0 else False
 
 class Inventory_Event(Event):
     def __init__(self, location: str, weather: str, item) -> None:

@@ -29,10 +29,9 @@ class Character:
             target.health -= self.damage
             print(f"{self.name} has attacked {target.name}. {target.name} has {target._health}/{target.health_max} HP left")
         except Exception as e:
-            target.health = 0
-            print(f"{target.name} has been defeated")
+            target._health = 0
+            print(e)
 
-            
     
     def reset(self) -> None:
         self._health = self.health_max
@@ -40,13 +39,24 @@ class Character:
 class Hero(Character):
     def __init__(self, name: str, health: int) -> None:
         super().__init__(name, health)
-        self.stats : dict[Statistic:int] = {Statistic.STRENGTH:1, Statistic.INTELLIGENCE:1, Statistic.CHARISMA:1}
-        self.modifiers: dict[Statistic:int] = {Statistic.STRENGTH:1, Statistic.INTELLIGENCE:1, Statistic.CHARISMA:1}
+        self.stats : dict[Statistic:int] = {stat:1 for stat in Statistic}
+        self.stats[Statistic.SPEED] = 4
+        self.modifiers: dict[Statistic:int] = {stat:1 for stat in Statistic}
         self.default_weapon = self.weapon
 
     @property
     def damage(self) -> int:
         return (self.weapon.damage + self.stats[Statistic.STRENGTH])*self.modifiers[Statistic.STRENGTH]
+    
+    @property
+    def health(self) -> int:
+        return self._health
+
+    @health.setter
+    def health(self, value:int) -> None:
+        if value < 1:
+            raise HeroDeathException
+        self._health = value
 
     def equip(self, weapon) -> None:
         print(f"{self.name} equipped the {weapon.name}")
@@ -59,11 +69,32 @@ class Hero(Character):
         print(f"{self.name} dropped the {self.weapon.name}")
         self.weapon = self.default_weapon
 
+    def clear_modifiers(self) -> None:
+        self.modifiers: dict[Statistic:int] = {stat:1 for stat in Statistic}
 
 class Enemy(Character):
     def __init__(self, name: str, health: int, weapon) -> None:
         super().__init__(name, health)
         self.weapon = weapon
+    @property
+    def health(self) -> int:
+        return self._health
+
+    @health.setter
+    def health(self, value:int) -> None:
+        if value < 1:
+            raise EnemyDeathException
+        self._health = value
+
+class HeroDeathException(Exception):
+    def __init__(self, message = "You Died!") -> None:
+        self.message = message
+        super().__init__(self.message)
+
+class EnemyDeathException(Exception):
+    def __init__(self, message = "Enemy has been defeated!") -> None:
+        self.message = message
+        super().__init__(self.message)
 
 dragon = Enemy("Dragon", 30, fists)
 
