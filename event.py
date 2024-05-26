@@ -4,9 +4,7 @@ from utils import get_numeric, choice_menu
 from statistic import Statistic
 
 class Event:
-    def __init__(self, location: str, weather: str) -> None:
-        self.location = location
-        self.weather = weather
+    def __init__(self) -> None:
         self.actions : dict = {}
 
     def event_loop(self, hero: Hero) -> bool:
@@ -36,8 +34,8 @@ class Event:
 
 
 class Combat_Event(Event):
-    def __init__(self, location: str, weather: str, enemy: Enemy, skill_requirements: dict) -> None:
-        super().__init__(location, weather)
+    def __init__(self, enemy: Enemy, skill_requirements: dict) -> None:
+        super().__init__()
         self.enemy: Enemy = enemy
         self.actions: dict = {1:self.fight, 2:self.talk, 3:self.run}
         self.skill_requirements: dict = skill_requirements
@@ -83,9 +81,10 @@ class Combat_Event(Event):
         choice = choice_menu(rewards)
         hero.improve_statistic(Statistic(choice))
 
-class Inventory_Event(Event):
-    def __init__(self, location: str, weather: str, item) -> None:
-        super().__init__(location, weather)
+class Non_Combat_Event(Event):
+    possible_encouters = {"heal", "drop weapon", "equip weapon"}
+    def __init__(self, item) -> None:
+        super().__init__()
         self.item = item
         self.actions: dict = {1:self.take, 2:self.skip}
 
@@ -97,6 +96,6 @@ class Inventory_Event(Event):
         print("skip")
         return True
 
-dragon_event = Combat_Event("Swamp", "Sunny", dragon, {"CHARISMA":3})
-sword_event = Inventory_Event("Meadow", "Foggy", iron_sword)
+dragon_event = Combat_Event(dragon, {"CHARISMA":3})
+sword_event = Non_Combat_Event(iron_sword)
 print(type(dragon_event.fight))

@@ -14,6 +14,8 @@ repo na projekt prostej gry RPG w konsoli
 - [ ] dodać metodę skill check
 - [X] dodać nagrodę za przejście combat eventu
 - [X] dodać zakończenie eventu od razu gdy wróg lub gracz umrze
-
+- [ ] dodać mechanikę non combat event
+- [ ] dodać różne typy broni
+- [ ] dostosować zadawanie obrażeń zależnie od typu broni
 ---
 Autor: [Maciej Klimek](https://github.com/mklimek00)

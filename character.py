@@ -1,5 +1,6 @@
 from weapon import fists, short_bow, Weapon
 from statistic import Statistic
+from math import floor
 
 class Character:
     def __init__(self, name: str, health: int) -> None:
@@ -40,8 +41,7 @@ class Hero(Character):
     def __init__(self, name: str, health: int) -> None:
         super().__init__(name, health)
         self.stats : dict[Statistic:int] = {stat:1 for stat in Statistic}
-        self.stats[Statistic.SPEED] = 4
-        self.modifiers: dict[Statistic:int] = {stat:1 for stat in Statistic}
+        self.stats[Statistic.SPEED] = 3
         self.default_weapon = self.weapon
 
     @property
@@ -71,9 +71,6 @@ class Hero(Character):
             return
         print(f"{self.name} dropped the {self.weapon.name}")
         self.weapon = self.default_weapon
-
-    def clear_modifiers(self) -> None:
-        self.modifiers: dict[Statistic:int] = {stat:1 for stat in Statistic}
     
     def improve_statistic(self, stat : Statistic) -> None:
         self.stats[stat] += 1
@@ -82,6 +79,9 @@ class Hero(Character):
     def improve_max_health(self, added_value: int) -> None:
         self.health_max += added_value
         self.health += added_value
+
+    def heal(self, fraction: float) -> None:
+        self.health += fraction*self.health_max
 
 class Enemy(Character):
     def __init__(self, name: str, health: int, weapon) -> None:
