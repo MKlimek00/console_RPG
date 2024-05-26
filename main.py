@@ -7,15 +7,12 @@ import copy
 
 hero = Hero(name="Hero", health= 20)
 hero.equip(iron_sword)
-events = [dragon_event, sword_event]
+events = [dragon_event]#, sword_event]
 game_over = False
 utils.clear_console()
+main_game_actions = {1 : "go to the next event", 2 : "close game"}
 while not game_over:
-    print("1. choose next event\n2. close game")
-    choice = utils.get_numeric("Your choice: ")
-    while choice not in {1,2}:
-        print("Wrong input, choose proper number")
-        choice = utils.get_numeric("Your choice: ")
+    choice = utils.choice_menu(main_game_actions)
     if choice == 1:
         event = copy.copy(random.choice(events))
         game_over = event.event_loop(hero)

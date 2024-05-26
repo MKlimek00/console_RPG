@@ -5,3 +5,5 @@ class Statistic(Enum):
     INTELLIGENCE = 2
     CHARISMA = 3
     SPEED = 4
+
+print(Statistic(2))
