@@ -1,4 +1,4 @@
-from character import Hero, Enemy, Character, dragon
+from character import Hero, Character, DRAGON
 from weapon import iron_sword
 from utils import get_numeric, choice_menu
 from statistic import Statistic
@@ -14,10 +14,10 @@ class Event:
             act = self.actions[choice]
             end_event = act(hero)
         self.reset()
-
+        if hero.health == 0:
+            return True
         self.reward(hero)
-
-        return True if hero.health == 0 else False
+        return False
     
     def reward(self, hero: Hero): None
     pass
@@ -34,11 +34,10 @@ class Event:
 
 
 class Combat_Event(Event):
-    def __init__(self, enemy: Enemy, skill_requirements: dict) -> None:
+    def __init__(self, enemy: Character) -> None:
         super().__init__()
-        self.enemy: Enemy = enemy
+        self.enemy: Character = enemy
         self.actions: dict = {1:self.fight, 2:self.talk, 3:self.run}
-        self.skill_requirements: dict = skill_requirements
         self.turn_counter : int = 0
 
     def attack_queue(self, hero: Hero) -> list[Character]:
@@ -80,6 +79,7 @@ class Combat_Event(Event):
         rewards = {stat.value : stat.name for stat in Statistic}
         choice = choice_menu(rewards)
         hero.improve_statistic(Statistic(choice))
+        hero.improve_max_health(5)
 
 class Non_Combat_Event(Event):
     possible_encouters = {"heal", "drop weapon", "equip weapon"}
@@ -96,6 +96,5 @@ class Non_Combat_Event(Event):
         print("skip")
         return True
 
-dragon_event = Combat_Event(dragon, {"CHARISMA":3})
+dragon_event = Combat_Event(DRAGON)
 sword_event = Non_Combat_Event(iron_sword)
-print(type(dragon_event.fight))
