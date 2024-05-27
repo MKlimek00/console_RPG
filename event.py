@@ -1,7 +1,8 @@
-from character import Hero, Character, DRAGON
-from weapon import iron_sword
-from utils import get_numeric, choice_menu
+from character import Hero, Character, MONSTERS, MONSTERS_PROBABILITIES, HERO
+from weapon import iron_sword, initial_weapons
+from utils import choice_menu
 from statistic import Statistic
+import random
 
 class Event:
     def __init__(self) -> None:
@@ -9,69 +10,72 @@ class Event:
 
     def event_loop(self, hero: Hero) -> bool:
         end_event = False
+        print(self.description)
         while not end_event:
             choice = choice_menu(self.actions)
             act = self.actions[choice]
             end_event = act(hero)
         self.reset()
-        if hero.health == 0:
-            return True
-        self.reward(hero)
-        return False
+        return True if hero.health == 0 else False
     
-    def reward(self, hero: Hero): None
-    pass
+    @property
+    def hint(self) -> str:
+        return "basic event, nothing happens"
+    
+    @property
+    def description(self) -> str:
+        return "basic event, nothing happens"
         
-    def skill_check(self, hero: Hero, skill_name: str, min_skill_value: int) -> bool:
-        #TODO
-        # jak będą statystyki to dodać funkcjonalność
-        #arg list używać kwargs**
-        return True
-
-    def reset(self):
-        self.event_ended = False
-        pass
-
+    def skill_check(self, hero: Hero, stat: Statistic, min_value: int) -> bool:
+        if stat not in hero.stats.keys():
+            return False
+        return hero.stats[stat] >= min_value
 
 class Combat_Event(Event):
-    def __init__(self, enemy: Character) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.enemy: Character = enemy
+        self.enemy: Character = random.choices(MONSTERS, MONSTERS_PROBABILITIES, k=1)[0]
         self.actions: dict = {1:self.fight, 2:self.talk, 3:self.run}
-        self.turn_counter : int = 0
 
-    def attack_queue(self, hero: Hero) -> list[Character]:
-        #TODO
-        # jak będą statystyki to dodać sortowanie listy
-        return [hero, self.enemy]
-    
-    def reset(self) -> None:
-        self.enemy.reset()
-        self.turn_counter = 0
+    @property
+    def description(self) -> str:
+        return f"You have encountered {self.enemy.name}. What do you want to do?"
+
+    @property
+    def hint(self) -> str:
+        stat : Statistic = random.choice(list(self.enemy.stats.keys()))
+        value : int = self.enemy.stats[stat]
+        return f"You will meet a monster whose {stat.name} is on lvl {value}"
 
     def fight(self, hero: Hero) -> bool:
-        attack_queue : list[Character] = [hero, self.enemy]
+        attack_queue : list[Character] = sorted([hero, self.enemy], key= lambda x: x.stats[Statistic.SPEED], reverse=True)
         attack_queue[0].attack(attack_queue[1])
-        attack_queue[1].attack(attack_queue[0])
+        if attack_queue[1].health > 0:
+            attack_queue[1].attack(attack_queue[0])
 
-        return True if hero.health == 0 or self.enemy.health == 0 else False
+        if hero.health == 0:
+            return True
+        if self.enemy.health == 0:
+            self.reward(hero)
+            return True
+        return False
 
     def talk(self, hero: Hero) -> bool:
-        if self.skill_check(hero, "CHARISMA", 1):
-            print("talk")
+        if self.skill_check(hero, Statistic.CHARISMA, self.enemy.stats[Statistic.CHARISMA]):
+            print(f"You convinced the {self.enemy.name} to surrender")
             return True
         else:
-            print("you fucked up")
+            print(f"You insulted {self.enemy.name}'s mother")
             self.enemy.attack(hero)
             return True if hero.health == 0 else False
         
 
     def run(self, hero: Hero) -> bool:
-        if self.skill_check(hero, "CHARISMA", 1):
-            print("run")
+        if self.skill_check(hero, Statistic.SPEED, self.enemy.stats[Statistic.SPEED]*2):
+            print("You succesfuly escaped the danger.")
             return True
         else:
-            print("you fucked up")
+            print(f"You slipped on a leaf while running and {self.enemy.name} caught you.")
             self.enemy.attack(hero)
             return True if hero.health == 0 else False
     
@@ -82,19 +86,30 @@ class Combat_Event(Event):
         hero.improve_max_health(5)
 
 class Non_Combat_Event(Event):
-    possible_encouters = {"heal", "drop weapon", "equip weapon"}
-    def __init__(self, item) -> None:
+    possible_encouters = ["heal", "drop weapon", "equip weapon", "level up"]
+    effects = {"heal" : "hero.heal(0.4)",
+               "drop weapon": "hero.drop_weapon()",
+               "equip weapon":"hero.equip_weapon(random.choice(list(initial_weapons.values())))",
+               "level up": "hero.improve_statistic(random.choice(list(Statistic)))"}
+    def __init__(self) -> None:
         super().__init__()
-        self.item = item
         self.actions: dict = {1:self.take, 2:self.skip}
+    
+    @property
+    def description(self) -> str:
+        return "You can choose to get a random surprise or skip it."
+    
+    @property
+    def hint(self) -> str:
+        return "Surprise"
 
     def take(self, hero: Hero):
-        print("take")
+        choice = random.choice(self.possible_encouters)
+        effect = self.effects[choice]
+        print(f"Your random effect is: {choice}")
+        exec(effect)
         return True
 
     def skip(self, hero: Hero):
-        print("skip")
+        print("You refused to take your chance")
         return True
-
-dragon_event = Combat_Event(DRAGON)
-sword_event = Non_Combat_Event(iron_sword)

@@ -41,9 +41,6 @@ class Character:
             return True
         
         return False
-    
-    def reset(self) -> None:
-        self.health = self.health_max
 
 class Hero(Character):
     def __init__(self, name: str, health: int, stats: dict):
@@ -58,11 +55,15 @@ class Hero(Character):
             return self.stats[Statistic.STRENGTH]
         else : return 1
 
-    def equip(self, weapon) -> None:
+    @property
+    def stats_sum(self) -> int:
+        return sum(self.stats.values())
+
+    def equip_weapon(self, weapon) -> None:
         print(f"{self.name} equipped the {weapon.name}")
         self.weapon = weapon
 
-    def drop(self) -> None:
+    def drop_weapon(self) -> None:
         if self.weapon.name is fists.name:
             print(f"{self.name} can't drop the weapon, since he is not holding any")
             return
@@ -83,4 +84,16 @@ class Hero(Character):
         self.health += floor(fraction*self.health_max)
         print(f"You've healed {self.health - health_before} HP")
 
-DRAGON = Character(name="Dragon", health=30, stats={Statistic.STRENGTH:3, Statistic.INTELLIGENCE:5, Statistic.SPEED:2})
+HERO = Hero(name="Hero", health=50, stats={stat : 1 for stat in Statistic})
+
+
+SKELETON = Character(name="Skeleton", health= 5, stats={Statistic.STRENGTH:1, Statistic.CHARISMA:1, Statistic.SPEED:1})
+ZOMBIE = Character(name="Zombie", health= 10, stats={Statistic.STRENGTH:2, Statistic.CHARISMA:1, Statistic.SPEED:1})
+VAMPIRE = Character(name="Vampire", health= 20, stats={Statistic.STRENGTH:2, Statistic.CHARISMA:4, Statistic.SPEED:3})
+IMP = Character(name="Imp", health= 3, stats={Statistic.STRENGTH:8, Statistic.CHARISMA:1, Statistic.SPEED:6})
+GRIFFIN = Character(name="Griffin", health= 20, stats={Statistic.STRENGTH:3, Statistic.CHARISMA:2, Statistic.SPEED:4})
+DRAGON = Character(name="Dragon", health=30, stats={Statistic.STRENGTH:5, Statistic.CHARISMA:5, Statistic.SPEED:2})
+
+MONSTERS = [SKELETON, ZOMBIE, VAMPIRE, IMP, GRIFFIN, DRAGON]
+MONSTERS_PROBABILITIES = [15,30,12,6,2,1]
+MONSTERS_PROBABILITIES = [val/sum(MONSTERS_PROBABILITIES) for val in MONSTERS_PROBABILITIES] #normalized probability

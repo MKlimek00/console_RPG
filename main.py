@@ -1,26 +1,29 @@
-from character import Hero, DRAGON
-from weapon import fists, short_bow, iron_sword, magic_staff
-from event import dragon_event, sword_event
-from statistic import Statistic
+from character import HERO
+from weapon import initial_weapons
+from event import Combat_Event, Non_Combat_Event
 import random
 import utils
-import copy
 
 # utils.clear_console()
 game_over = False
-hero = Hero(name="Hero", health= 20, stats={stat : 1 for stat in Statistic})
-events = [dragon_event]#, sword_event]
-initial_weapons = {1:iron_sword, 2:short_bow, 3:magic_staff}
+hero = HERO
 
 choice = utils.choice_menu(initial_weapons)
-hero.equip(initial_weapons[choice])
+hero.equip_weapon(initial_weapons[choice])
 
 main_game_actions = {1 : "go to the next event", 2 : "close game"}
 while not game_over:
+    utils.wait_before_proceeding()
+    utils.clear_console()
+    if hero.stats_sum > 20:
+        print("Congratulations. You've won!")
+        break
     choice = utils.choice_menu(main_game_actions)
     if choice == 1:
-        event = copy.copy(random.choice(events))
-        game_over = event.event_loop(hero)
+        events = random.choices([Combat_Event(), Non_Combat_Event()], [0.8, 0.2], k=3)
+        events_choice = {num : event.hint for num, event in enumerate(events, 1)}
+        chosen_event = events[utils.choice_menu(events_choice)-1]
+        game_over = chosen_event.event_loop(hero)
 
     if choice == 2:
         game_over = True
