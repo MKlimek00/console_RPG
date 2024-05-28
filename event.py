@@ -1,5 +1,4 @@
-from character import Hero, Character, MONSTERS, MONSTERS_PROBABILITIES, HERO
-from weapon import iron_sword, initial_weapons
+from character import Hero, Character, MONSTERS, MONSTERS_PROBABILITIES
 from utils import choice_menu, normalize_probabilities
 from statistic import Statistic
 import random
@@ -91,8 +90,8 @@ class Combat_Event(Event):
 
 
 class Non_Combat_Event(Event):
-    possible_encouters = ["heal", "drop weapon", "equip weapon", "level up"]
-    effects = {"heal": "hero.heal(0.4)",
+    POSSIBLE_ENCOUNTERS = ["heal", "drop weapon", "equip weapon", "level up"]
+    EFFECTS = {"heal": "hero.heal(0.4)",
                "drop weapon": "hero.drop_weapon()",
                "equip weapon": "hero.equip_weapon(random.choice(list(initial_weapons.values())))",
                "level up": "hero.improve_statistic(random.choice(list(Statistic)))"}
@@ -109,14 +108,14 @@ class Non_Combat_Event(Event):
     def hint(self) -> str:
         return "Surprise"
 
-    def take(self, hero: Hero):
-        choice = random.choice(self.possible_encouters)
-        effect = self.effects[choice]
+    def take(self, hero: Hero) -> bool:
+        choice = random.choice(self.POSSIBLE_ENCOUNTERS)
+        effect = self.EFFECTS[choice]
         print(f"Your random effect is: {choice}")
         exec(effect)
         return True
 
-    def skip(self, hero: Hero):
+    def skip(self, hero: Hero) -> bool:
         print("You refused to take your chance")
         return True
 
