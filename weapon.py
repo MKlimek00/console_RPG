@@ -1,10 +1,11 @@
 from dataclasses import dataclass
 from statistic import Statistic
 
+
 @dataclass()
 class Weapon:
-    name:str
-    used_statistic : Statistic
+    name: str
+    used_statistic: Statistic
     damage: int
 
     def __repr__(self) -> str:
@@ -16,4 +17,4 @@ short_bow = Weapon("Short bow", Statistic.DEXTERITY, 5)
 fists = Weapon("Fists", Statistic.STRENGTH, 1)
 magic_staff = Weapon("Magic staff", Statistic.INTELLIGENCE, 5)
 
-initial_weapons = {1:iron_sword, 2:short_bow, 3:magic_staff}
+initial_weapons = {1: iron_sword, 2: short_bow, 3: magic_staff}

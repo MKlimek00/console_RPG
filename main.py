@@ -7,7 +7,7 @@ import utils
 GAME_OVER = False
 hero = HERO
 EVENTS_PER_TURN = 3
-MAIN_GAME_ACTIONS = {1 : "go to the next event", 2 : "close game"}
+MAIN_GAME_ACTIONS = {1: "go to the next event", 2: "close game"}
 
 # Start of the game
 utils.clear_console()
@@ -21,11 +21,13 @@ while not GAME_OVER:
     if hero.stats_sum > 10:
         print("Congratulations. You've won!")
         break
+    print("Your current stats:\n",hero.view_stats)
     print("What do you want to do now?")
     choice = utils.choice_menu(MAIN_GAME_ACTIONS)
     if choice == 1:
         events = random_events(EVENTS_PER_TURN)
-        events_choice = {num : event.hint for num, event in enumerate(events, 1)}
+        events_choice = {num: event.hint for num,
+                         event in enumerate(events, 1)}
         chosen_event = events[utils.choice_menu(events_choice)-1]
         GAME_OVER = chosen_event.event_loop(hero)
 
@@ -39,5 +41,3 @@ else:
 
 utils.wait_before_proceeding()
 utils.clear_console()
-
-
