@@ -1,5 +1,13 @@
 # console_RPG
-repo na projekt prostej gry RPG w konsoli
+Projekt prostej gry konsolowej.
+Pierwotnym gatunkiem miał być RPG, ale wyszedł z tego Rouge-like\Dungeon crawler
+
+Celem projektu było opracowanie prostej gry np. RPG w cmd. Zaimplementowane prosty system walki turowej oraz system generowania eventów z którymi gracz wchodzi w interakcję.
+
+Gra polega na ulepszaniu statystyk gracza poprzez wygrywanmie pojedynkóww z potworami.
+Oprócz walki gracz ma możliwość rozmowy z potworem lub ucieczki, ale za to nie dostanie nagrody.
+Możliwe jest też spotkanie eventu - niespodzianki z losowym efektem dla gracza.
+Gra kończy się w momencie zakończenia jej przez gracza, śmierci bohatera lub po osiągnięciu odpowiedniej sumy statystyk.
 
 ### TODO
 - [X] dodać klasę gracza oraz wroga
@@ -15,5 +23,6 @@ repo na projekt prostej gry RPG w konsoli
 - [X] dodać zakończenie eventu od razu gdy wróg lub gracz umrze
 - [X] dodać mechanikę non combat event
 - [X] dostosować zadawanie obrażeń zależnie od typu broni
+- [ ] dokumentacja funkcji
 ---
 Autor: [Maciej Klimek](https://github.com/mklimek00)

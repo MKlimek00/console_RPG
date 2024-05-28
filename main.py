@@ -8,6 +8,7 @@ GAME_OVER = False
 hero = HERO
 EVENTS_PER_TURN = 3
 MAIN_GAME_ACTIONS = {1: "go to the next event", 2: "close game"}
+STATS_SUM_TO_WIN = 10
 
 # Start of the game
 utils.clear_console()
@@ -18,10 +19,10 @@ hero.equip_weapon(initial_weapons[choice])
 while not GAME_OVER:
     utils.wait_before_proceeding()
     utils.clear_console()
-    if hero.stats_sum > 10:
+    if hero.stats_sum > STATS_SUM_TO_WIN:
         print("Congratulations. You've won!")
         break
-    print("Your current stats:\n",hero.view_stats)
+    print("Your current stats:\n", hero.view_stats)
     print("What do you want to do now?")
     choice = utils.choice_menu(MAIN_GAME_ACTIONS)
     if choice == 1:
