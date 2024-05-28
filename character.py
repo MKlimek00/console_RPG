@@ -70,6 +70,7 @@ class Hero(Character):
         stat_line = ''
         for stat, value in self.stats.items():
             stat_line += f'{stat.name}: {value}   '
+        stat_line += f'\n {self.health}/{self.health_max} HP'
         return stat_line
 
     def equip_weapon(self, weapon) -> None:
