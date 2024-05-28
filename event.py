@@ -1,6 +1,6 @@
 from character import Hero, Character, MONSTERS, MONSTERS_PROBABILITIES, HERO
 from weapon import iron_sword, initial_weapons
-from utils import choice_menu
+from utils import choice_menu, normalize_probabilities
 from statistic import Statistic
 import random
 
@@ -15,7 +15,7 @@ class Event:
             choice = choice_menu(self.actions)
             act = self.actions[choice]
             end_event = act(hero)
-        self.reset()
+
         return True if hero.health == 0 else False
     
     @property
@@ -113,3 +113,7 @@ class Non_Combat_Event(Event):
     def skip(self, hero: Hero):
         print("You refused to take your chance")
         return True
+    
+def random_events(number_of_events: int, probabilities: list[float] = [0.8, 0.2]) -> list[Event]:
+    probabilities = normalize_probabilities(probabilities)
+    return random.choices([Combat_Event(), Non_Combat_Event()], probabilities, k=number_of_events)

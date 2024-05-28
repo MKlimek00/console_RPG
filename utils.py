@@ -34,3 +34,6 @@ def choice_menu(choices: dict[int:str]) -> int:
         choice = get_numeric("Your choice: ")
         
     return choice
+
+def normalize_probabilities(probabilities: list[float]) -> list[float]:
+    return [prob/sum(probabilities) for prob in probabilities]

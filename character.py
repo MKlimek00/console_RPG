@@ -1,6 +1,7 @@
 from statistic import Statistic
 from weapon import Weapon, fists
 from math import floor
+import utils
 
 class Character:
     def __init__(self, name:str, health:int, stats: dict[Statistic:int]) -> None:
@@ -95,5 +96,4 @@ GRIFFIN = Character(name="Griffin", health= 20, stats={Statistic.STRENGTH:3, Sta
 DRAGON = Character(name="Dragon", health=30, stats={Statistic.STRENGTH:5, Statistic.CHARISMA:5, Statistic.SPEED:2})
 
 MONSTERS = [SKELETON, ZOMBIE, VAMPIRE, IMP, GRIFFIN, DRAGON]
-MONSTERS_PROBABILITIES = [15,30,12,6,2,1]
-MONSTERS_PROBABILITIES = [val/sum(MONSTERS_PROBABILITIES) for val in MONSTERS_PROBABILITIES] #normalized probability
+MONSTERS_PROBABILITIES = utils.normalize_probabilities([15,30,12,6,2,1])
