@@ -1,5 +1,6 @@
 from character import Hero, Character, MONSTERS, MONSTERS_PROBABILITIES
 from utils import choice_menu, normalize_probabilities
+from weapon import initial_weapons
 from statistic import Statistic
 import random
 
