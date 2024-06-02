@@ -4,11 +4,17 @@ from statistic import Statistic
 
 @dataclass()
 class Weapon:
+    """
+    Klasa broni, w którą może wyposażyć się gracz.
+    """
     name: str
     used_statistic: Statistic
     damage: int
 
     def __repr__(self) -> str:
+        """
+        Funkca reprezentacji obiektu w postaci napisu.
+        """
         return f"{self.name}, damage: {self.damage}, uses: {self.used_statistic.name}"
 
 

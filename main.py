@@ -3,6 +3,10 @@ from weapon import initial_weapons
 from event import random_events
 import utils
 
+"""
+Moduł główny programu.
+"""
+
 # SETUP
 GAME_OVER = False
 hero = HERO

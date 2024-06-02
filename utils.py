@@ -2,6 +2,9 @@ from os import system, name
 
 
 def clear_console() -> None:
+    """
+    Funkcja czyszcząca konsolę
+    """
 
     # for Windows
     if name == 'nt':
@@ -12,6 +15,9 @@ def clear_console() -> None:
 
 
 def get_numeric(prompt: str) -> int:
+    """
+    Funkcja bezpiecznego pobrania liczby całkowitej od gracza.
+    """
     while True:
         try:
             choice = int(input(prompt))
@@ -22,10 +28,16 @@ def get_numeric(prompt: str) -> int:
 
 
 def wait_before_proceeding() -> None:
+    """
+    Funkcja oczekiwania na reakcje gracza, żeby zdążył wszystko przeczytać zanim pójdzie dalej.
+    """
     _ = input("Press <Enter> to proceed...")
 
 
 def choice_menu(choices: dict[int:str]) -> int:
+    """
+    Funkcja zapewniająca poprawny wybór jednej z kilku opcji prezentowanej dla gracza.
+    """
     for number, action in choices.items():
         if hasattr(action, '__call__'):
             print(f"{number}. {action.__name__}")
@@ -40,4 +52,7 @@ def choice_menu(choices: dict[int:str]) -> int:
 
 
 def normalize_probabilities(probabilities: list[float]) -> list[float]:
+    """
+    Funkcja normalizująca listę liczb tak, aby suma liczb w liście wynosiła 1
+    """
     return [prob/sum(probabilities) for prob in probabilities]

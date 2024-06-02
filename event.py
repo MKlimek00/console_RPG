@@ -6,10 +6,16 @@ import random
 
 
 class Event:
+    """
+    Klasa zdarzenia, z którym bohater wchodzi w interakcje. 
+    """
     def __init__(self) -> None:
         self.actions: dict = {}
 
     def event_loop(self, hero: Hero) -> bool:
+        """
+        Funkcja pętli głównej zdarzenia.
+        """
         end_event = False
         print(self.description)
         while not end_event:
@@ -21,19 +27,31 @@ class Event:
 
     @property
     def hint(self) -> str:
+        """
+        Pole zwracające podpowiedź dotyczącą zdarzenia.
+        """
         return "basic event, nothing happens"
 
     @property
     def description(self) -> str:
+        """
+        Pole zwracające pełny opis zdarzenia.
+        """
         return "basic event, nothing happens"
 
     def skill_check(self, hero: Hero, stat: Statistic, min_value: int) -> bool:
+        """
+        Funkcja sprawdzająca wymaganie dotyczące statystyki gracza.
+        """
         if stat not in hero.stats.keys():
             return False
         return hero.stats[stat] >= min_value
 
 
 class Combat_Event(Event):
+    """
+    Klasa Zdarzenia, w którym odbywa się walka.
+    """
     def __init__(self) -> None:
         super().__init__()
         self.enemy: Character = random.choices(
@@ -42,15 +60,24 @@ class Combat_Event(Event):
 
     @property
     def description(self) -> str:
+        """
+        Pole zwracające pełny opis zdarzenia.
+        """
         return f"You have encountered {self.enemy.name}. What do you want to do?"
 
     @property
     def hint(self) -> str:
+        """
+        Pole zawierające podpowiedź o nadchodzącym zdarzeniu.
+        """
         stat: Statistic = random.choice(list(self.enemy.stats.keys()))
         value: int = self.enemy.stats[stat]
         return f"You will meet a monster whose {stat.name} is on lvl {value}"
 
     def fight(self, hero: Hero) -> bool:
+        """
+        Funkcja sekwencji walki w zdarzeniu.
+        """
         attack_queue: list[Character] = sorted(
             [hero, self.enemy], key=lambda x: x.stats[Statistic.SPEED], reverse=True)
         attack_queue[0].attack(attack_queue[1])
@@ -65,6 +92,9 @@ class Combat_Event(Event):
         return False
 
     def talk(self, hero: Hero) -> bool:
+        """
+        Funkcja sekwencji rozmowy z przeciwnikiem w zdarzeniu.
+        """
         if self.skill_check(hero, Statistic.CHARISMA, self.enemy.stats[Statistic.CHARISMA]):
             print(f"You convinced the {self.enemy.name} to surrender")
             return True
@@ -74,6 +104,9 @@ class Combat_Event(Event):
             return True if hero.health == 0 else False
 
     def run(self, hero: Hero) -> bool:
+        """
+        Funkcja sekwencji ucieczki przed wrogiem.
+        """
         if self.skill_check(hero, Statistic.SPEED, self.enemy.stats[Statistic.SPEED]*2):
             print("You succesfuly escaped the danger.")
             return True
@@ -84,6 +117,9 @@ class Combat_Event(Event):
             return True if hero.health == 0 else False
 
     def reward(self, hero: Hero) -> None:
+        """
+        Funkcja przyznawania nagrody bohaterowi za wygranie walki.
+        """
         rewards = {stat.value: stat.name for stat in Statistic}
         choice = choice_menu(rewards)
         hero.improve_statistic(Statistic(choice))
@@ -91,6 +127,9 @@ class Combat_Event(Event):
 
 
 class Non_Combat_Event(Event):
+    """
+    Klasa zdarzenia bez walki
+    """
     POSSIBLE_ENCOUNTERS = ["heal", "drop weapon", "equip weapon", "level up"]
     EFFECTS = {"heal": "hero.heal(0.4)",
                "drop weapon": "hero.drop_weapon()",
@@ -103,13 +142,22 @@ class Non_Combat_Event(Event):
 
     @property
     def description(self) -> str:
+        """
+        Pole zwracające pełny opis zdarzenia.
+        """
         return "You can choose to get a random surprise or skip it."
 
     @property
     def hint(self) -> str:
+        """
+        Pole zwracające podpowiedź o nadchodzącym zdarzeniu.
+        """
         return "Surprise"
 
     def take(self, hero: Hero) -> bool:
+        """
+        Funkcja sekwencji skorzystania z niespodzianki.
+        """
         choice = random.choice(self.POSSIBLE_ENCOUNTERS)
         effect = self.EFFECTS[choice]
         print(f"Your random effect is: {choice}")
@@ -117,10 +165,16 @@ class Non_Combat_Event(Event):
         return True
 
     def skip(self, hero: Hero) -> bool:
+        """
+        Funkcja sekwencji pominięcia niespodzianki.
+        """
         print("You refused to take your chance")
         return True
 
 
 def random_events(number_of_events: int, probabilities: list[float] = [0.8, 0.2]) -> list[Event]:
+    """
+    Funkcja losująca eventy dla bohatera.
+    """
     probabilities = normalize_probabilities(probabilities)
     return random.choices([Combat_Event(), Non_Combat_Event()], probabilities, k=number_of_events)
