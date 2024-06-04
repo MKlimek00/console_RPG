@@ -55,4 +55,7 @@ def normalize_probabilities(probabilities: list[float]) -> list[float]:
     """
     Funkcja normalizująca listę liczb tak, aby suma liczb w liście wynosiła 1
     """
-    return [prob/sum(probabilities) for prob in probabilities]
+    if sum(n <= 0 for n in probabilities) > 0:
+        return len(probabilities)*[1/len(probabilities)]
+    else:
+        return [prob/sum(probabilities) for prob in probabilities]
